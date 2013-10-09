@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package backjack;
+package blackjack;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,9 +14,11 @@ import java.util.Random;
 class Table {
     Dealer dealer;
     ArrayList<Player> players;
+    Database db;
     
-    public Table() {
+    public Table(Database d) {
         players = new ArrayList();
+        db = d;
     }
 
     void play() {
@@ -47,7 +49,7 @@ class Table {
             // lets pay the player that got a black jack
             if(p.hand.blackjack()) {
                 p.cash = (int) (p.cash + p.betAmount * 1.6);
-                System.out.println("[HAND] BlackJack " + p.hand.toString());
+                db.saveHand(p.hand, dealer.hand);
                 p.hand = null;
             } else {
                 //in this case the player has not got a blackjack
@@ -61,7 +63,7 @@ class Table {
                         dealer.takeCurrentBet(p);
 
                         //also take their hand
-                        System.out.println("[HAND] Player Bust " + p.hand.toString());
+                        db.saveHand(p.hand, dealer.hand);
                         p.hand = null;
                         break;
                     }
@@ -77,6 +79,7 @@ class Table {
                 for (Player p : players) {
                     if(p.hand != null && !p.hand.bust()) {
                         p.cash = p.cash + p.betAmount;
+                        db.saveHand(p.hand, dealer.hand);                        
                         p.hand = null;
                     }
 
@@ -92,27 +95,12 @@ class Table {
                 //if the player wins
                 if (p.hand.beats(dealer.hand)) {
                     p.cash = p.cash + p.betAmount;
-                    System.out.println(
-                            "[HAND] Player Win " +
-                            p.hand.toString() +
-                            "|" +
-                            dealer.hand.toString());
-                    
                 } else if (dealer.hand.beats(p.hand)) {
                     p.cash = p.cash - p.betAmount;
                     p.betAmount = 0;
-                    System.out.println(
-                            "[HAND] Player Lost " +
-                            p.hand.toString() +
-                            "|" +
-                            dealer.hand.toString());
-                } else
-                    System.out.println(
-                            "[HAND] Push " + 
-                            p.hand.toString() + 
-                            "|" + 
-                            dealer.hand.toString());
+                }
                 
+                db.saveHand(p.hand, dealer.hand);
                 p.hand = null;
             }
         } 

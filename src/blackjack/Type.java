@@ -2,14 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package backjack;
+package blackjack;
 
 /**
  *
  * @author Stewart
  */
-public enum Actions {
-    HIT,
-    SIT,
-    DOUBLE_DOWN
+public enum Type {
+    JACK,
+    QUEEN,
+    KING,
+    ACE,
+    VALUE;
 }
