@@ -1,4 +1,4 @@
-Backjack
+Blackjack
 ========
 A simple blackjack simulator implemented in Java.
 
